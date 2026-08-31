@@ -1,0 +1,502 @@
+/* A Year of You — a book, not a website.
+   Warm paper, deep ink, generous margins. Nothing competes with the photographs. */
+
+:root {
+  --paper: #f7f2e9;
+  --paper-edge: #ebe2d3;
+  --paper-shadow: rgba(60, 42, 28, 0.16);
+  --ink: #2b2320;
+  --ink-soft: #6a5c52;
+  --ink-faint: #a2938a;
+  --accent: #9a5f4a;
+  --gold: #b08d5b;
+  --room: #1a1613;
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --hand: "Caveat", "Bradley Hand", "Segoe Script", cursive;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 50% 0%, #2a2320 0%, var(--room) 60%),
+    var(--room);
+  color: var(--ink);
+  font-family: var(--serif);
+  overscroll-behavior: none;
+}
+
+/* ---------- Opening curtain ---------- */
+
+#curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--room);
+  transition: opacity 900ms ease, visibility 900ms;
+  text-align: center;
+  padding: 2rem;
+}
+#curtain.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+
+#curtain h1 {
+  font-size: clamp(2.4rem, 7vw, 4.6rem);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--paper);
+  margin: 0 0 0.6rem;
+}
+#curtain p {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 2.4rem;
+}
+#openBtn {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  padding: 0.95rem 2.4rem;
+  cursor: pointer;
+  transition: background 300ms ease, color 300ms ease;
+}
+#openBtn:hover, #openBtn:focus-visible { background: var(--gold); color: var(--room); }
+
+/* ---------- Stage ---------- */
+
+#stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(0.5rem, 2vw, 2rem);
+}
+
+#book { box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55); }
+
+/* StPageFlip gives each page this class hook.
+   IMPORTANT: the library writes `display:block` inline on every leaf and flips
+   it to `none` to hide pages, so .page can never be a flex container — an
+   !important override would force hidden pages visible. The inner wrapper is
+   absolutely positioned to fill the leaf instead, which the library leaves alone. */
+.page {
+  background: var(--paper);
+  background-image:
+    radial-gradient(circle at 22% 14%, rgba(154, 95, 74, 0.045) 0%, transparent 55%),
+    radial-gradient(circle at 78% 82%, rgba(176, 141, 91, 0.05) 0%, transparent 55%);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* The gutter shadow that sells the spine */
+.page--left  { box-shadow: inset -22px 0 26px -22px var(--paper-shadow); }
+.page--right { box-shadow: inset  22px 0 26px -22px var(--paper-shadow); }
+
+.page__inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.1rem, 3.2%, 2.6rem);
+  padding-bottom: clamp(1.9rem, 5%, 3.2rem);
+  min-height: 0;
+}
+
+.page__folio {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.65rem;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+/* ---------- Cover ---------- */
+
+.cover {
+  background:
+    linear-gradient(155deg, #4a2f24 0%, #6b4433 45%, #3d251c 100%);
+  color: #f4e9d8;
+}
+.cover .page__inner {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: clamp(12px, 3.5%, 26px);
+  border: 1px solid rgba(214, 178, 122, 0.42);
+  pointer-events: none;
+}
+.cover h1 {
+  font-size: clamp(1.9rem, 5.4vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+.cover .rule {
+  width: 54px; height: 1px;
+  background: var(--gold);
+  margin: 0 auto 1.1rem;
+}
+.cover .sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 2.1vw, 1.25rem);
+  color: #dcc9a8;
+  margin: 0 0 2.6rem;
+  max-width: 26ch;
+  line-height: 1.5;
+}
+.cover .from {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(214, 178, 122, 0.85);
+}
+
+/* ---------- Typography ---------- */
+
+.chapter__eyebrow {
+  font-family: var(--sans);
+  font-size: 0.58rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  flex: none;
+}
+.chapter__heading {
+  font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  margin: 0 0 0.35rem;
+  flex: none;
+}
+.chapter__sub {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: clamp(0.85rem, 1.7vw, 1.02rem);
+  margin: 0 0 1rem;
+  flex: none;
+}
+
+.prose {
+  font-size: clamp(0.92rem, 1.75vw, 1.12rem);
+  line-height: 1.62;
+  color: var(--ink);
+  margin: 0;
+  flex: none;
+}
+.prose p { margin: 0 0 0.85em; }
+.prose p:last-child { margin-bottom: 0; }
+
+/* The daughter's voice — handwritten, small, off to one side */
+.voice-baby {
+  margin-top: auto;
+  padding-top: 1.1rem;
+  flex: none;
+}
+.voice-baby__label {
+  font-family: var(--sans);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.voice-baby__text {
+  font-family: var(--hand);
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1.32;
+  color: var(--accent);
+}
+
+/* ---------- Photos ---------- */
+
+.figure {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+/**
+ * The frame is a centring box, not a crop. It used to be the photo's shape —
+ * the cell filled it and `object-fit: cover` threw away whatever didn't match,
+ * which is how a portrait in a landscape cell lost the faces at the top of it.
+ * Now the cell only says how much room there is; the photograph keeps its own
+ * proportions inside that room and is printed whole, however small that makes it.
+ */
+.figure__frame {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+/* A frame with no photograph behind it still reads as a photograph-shaped hole. */
+.figure__frame:empty {
+  align-self: stretch;
+  width: 100%;
+  background: #e4dccd;
+  border-radius: 1px;
+  box-shadow: 0 2px 10px rgba(60, 42, 28, 0.16);
+}
+/* `contents` so the <img> is the flex item: a percentage max-height only
+   resolves against a parent with a definite height, and <picture>'s is auto. */
+.figure__frame picture { display: contents; }
+
+.figure__frame img {
+  /* Intrinsic size comes from the width/height attributes, so the box is the
+     right shape before a single byte of the photo has arrived. */
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 1px;
+  box-shadow: 0 2px 10px rgba(60, 42, 28, 0.16);
+  /* The LQIP sits on the photo itself and is exactly its shape, so it can no
+     longer show as a band of blur around a photo that doesn't fill the cell. */
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  /* Nothing has loaded yet: hide the alt text so only the blur shows. */
+  color: transparent;
+  font-size: 0;
+  filter: blur(7px);
+  transition: filter 620ms ease;
+}
+.figure__frame img.loaded { filter: none; }
+
+.figure figcaption {
+  font-family: var(--sans);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 0.55rem;
+  flex: none;
+  display: flex;
+  justify-content: center;
+  gap: 0.9rem;
+}
+/* The caption is centred under a photo that no longer fills the cell, so the
+   two halves need a mark between them rather than the width of the page. */
+.figure figcaption span:empty { display: none; }
+.figure figcaption span:not(:empty) + span::before {
+  content: '·';
+  margin-right: 0.9rem;
+  color: var(--ink-faint);
+}
+
+/* Photo grids per page.
+   Rows of photographs at a shared height, each as wide as its own shape asks —
+   the row widths and the flex-grow values are written by the builder from the
+   real pixel dimensions, so nothing here has to guess at a photo's proportions. */
+.grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.4%, 0.9rem);
+}
+.grid__row {
+  display: flex;
+  flex-basis: 0;
+  min-height: 0;
+  gap: clamp(0.5rem, 1.4%, 0.9rem);
+  justify-content: center;
+}
+.grid__cell {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- Milestone & interlude pages ---------- */
+
+.milestone .page__inner {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.milestone__mark {
+  font-family: var(--sans);
+  font-size: 0.55rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.1rem;
+}
+.milestone__title {
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 300;
+  font-style: italic;
+  margin: 0 0 1rem;
+  line-height: 1.15;
+}
+.milestone__rule { width: 40px; height: 1px; background: var(--accent); margin: 0 auto 1rem; }
+
+/* ---------- Letters ---------- */
+
+.letter .page__inner { justify-content: center; }
+.letter__heading {
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.4rem;
+}
+.letter .prose { font-size: clamp(0.95rem, 1.85vw, 1.15rem); line-height: 1.75; }
+
+/* Long letters. The leaf cannot grow, so the type steps down instead of the
+   last paragraph quietly falling off the bottom of the page. */
+.letter--long .prose  { font-size: clamp(0.82rem, 1.55vw, 0.98rem); line-height: 1.62; }
+.letter--long .prose p  { margin-bottom: 0.7em; }
+.letter--xlong .prose { font-size: clamp(0.72rem, 1.34vw, 0.86rem); line-height: 1.56; }
+.letter--xlong .prose p { margin-bottom: 0.6em; }
+.letter--xlong .letter__heading { margin-bottom: 0.9rem; }
+.letter--baby .prose { font-family: var(--hand); font-size: clamp(1.2rem, 2.6vw, 1.6rem); line-height: 1.5; color: var(--accent); }
+
+/* The gratitude notes and the dedication are short pieces of text alone on a
+   leaf. At body size they read as a caption stranded in a corner; given a
+   generous measure and a little more weight they read as a deliberate pause
+   between chapters, which is what they are. */
+.letter--gratitude .page__inner,
+.dedication .page__inner {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.letter--gratitude .prose,
+.dedication .prose {
+  max-width: 30ch;
+  font-size: clamp(1.05rem, 2.15vw, 1.35rem);
+  line-height: 1.8;
+}
+.letter--gratitude .letter__heading,
+.dedication .letter__heading {
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 2.9vw, 1.9rem);
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.letter--gratitude .chapter__eyebrow { text-align: center; margin-bottom: 0.9rem; }
+.letter--gratitude .letter__heading::after,
+.dedication .letter__heading::after {
+  content: '';
+  display: block;
+  width: 38px;
+  height: 1px;
+  background: var(--accent);
+  margin: 0.9rem auto 1.3rem;
+}
+
+.colophon .page__inner {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ---------- Controls ---------- */
+
+#controls {
+  position: fixed;
+  bottom: clamp(0.5rem, 2vh, 1.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.5rem 1.1rem;
+  background: rgba(20, 16, 13, 0.62);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(214, 178, 122, 0.2);
+  border-radius: 999px;
+  z-index: 40;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+#controls.ready { opacity: 1; }
+
+#controls button {
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+#controls button:hover:not(:disabled) { opacity: 1; }
+#controls button:disabled { opacity: 0.25; cursor: default; }
+
+#folio {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  min-width: 9ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+#hint {
+  position: fixed;
+  bottom: calc(clamp(0.5rem, 2vh, 1.5rem) + 3.2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(214, 178, 122, 0.6);
+  z-index: 40;
+  transition: opacity 600ms ease;
+  pointer-events: none;
+}
+#hint.gone { opacity: 0; }
+
+@media (max-width: 720px) {
+  .page__inner { padding: 1rem; }
+  #hint { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
